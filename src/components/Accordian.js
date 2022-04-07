@@ -18,7 +18,6 @@ const Accordian = ({ data }) => {
     let i = 0
     responses.forEach((response) => {
       if (data) {
-        // console.log(data.user, response.correct)
         if (response.correct) {
           i++;
         }

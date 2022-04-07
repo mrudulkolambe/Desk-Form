@@ -20,10 +20,8 @@ export function UserQuizContextProvider({ children }) {
 	const addQue = (data) => {
 		let arr = queArr;
 		data.order = queArr.length
-		console.log(data)
 		arr.push(data)
 		setQueArr(arr)
-		console.log(queArr)
 	}
 	const queEditor = (data) => {
 		setQueData(data)

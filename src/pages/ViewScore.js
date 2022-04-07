@@ -3,11 +3,17 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from '../firebase-config';
 import { useParams } from 'react-router-dom';
 import { useUserAuth } from '../context/UserAuthContext';
-import QuizQue from "../components/QuizQue"
+import ScoreQuestion from '../components/ScoreQuestion';
 
 const ViewScore = () => {
 	const { user } = useUserAuth()
-	const [data, setData] = useState({});
+	const dummy = {
+		title: "Loading...",
+		description: "Loading...",
+		response: [],
+		questions: []
+	}
+	const [data, setData] = useState(dummy);
 	const { quizID } = useParams();
 	const [score, setScore] = useState(0)
 	useEffect(() => {
@@ -24,20 +30,19 @@ const ViewScore = () => {
 	useEffect(() => {
 		const responses = data.response
 		if (!data) {
-		  return
+			return
 		}
-		console.log(data)
 		setScore(0)
 		let i = 0
 		responses.forEach((response) => {
-		  if (data) {
-			if (response.correct) {
-			  i++;
+			if (data) {
+				if (response.correct) {
+					i++;
+				}
 			}
-		  }
 		})
 		setScore(i)
-	  }, [data]);
+	}, [data]);
 	return (
 		<>
 			<form className="flex mt-6 m-auto flex-col justify-start h-3/4 px-3 md:px-12">
@@ -62,8 +67,11 @@ const ViewScore = () => {
 					<hr className="my-6 w-11/12 m-auto" />
 					<div>
 						{
-							data && data.response.map((que) => {
-								console.log(que)
+							data && data.questions.map((question, i) => {
+								return <ScoreQuestion key={i}
+									data={question}
+									answer={data.response[i]}
+									order={i} />
 							})
 						}
 					</div>
