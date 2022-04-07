@@ -1,38 +1,42 @@
-.App {
-  text-align: center;
+@import url("https://fonts.googleapis.com/css?family=Nunito:200,300,regular,500,600,700,800,900,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic");
+body{
+  height: 100vh;
+  width: 100vw;
+  font-family: 'Nunito', sans-serif;
+  overflow-x: hidden;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body::-webkit-scrollbar{
+  width: 0;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+input,
+textarea {
+  padding: 0.6rem 1rem;
+  outline: none;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  transition: 0.2s ease;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+input:focus,
+textarea:focus {
+  border-color: rgb(102, 126, 234);
 }
-
-.App-link {
-  color: #61dafb;
+.leftAligned{
+  overflow-y: scroll;
+  height: 83%;
+  left: 5%;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.rightAligned{
+  height: 83%;
+  right: 5%;
+}
+.leftAligned::-webkit-scrollbar{
+  width: 0;
+}
+.rightAligned::-webkit-scrollbar{
+  width: 0;
+}
+.accordian_hidden{
+  height: 0;
+  padding: 0;
+  opacity: 0;
+  transition: 0.3s ease;
 }
