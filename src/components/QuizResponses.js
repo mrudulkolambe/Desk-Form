@@ -32,7 +32,7 @@ const QuizResponses = () => {
 		<div>
 			{ data.map((responseData) => {
 				return <Accordian data={responseData}/>
-			}) }
+			})}
 		</div>
 	)
 }

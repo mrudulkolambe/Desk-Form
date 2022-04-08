@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useUserQuiz } from '../context/QuizQueDataContext';
 import QuizOption from './QuizOption'
 
@@ -19,7 +19,7 @@ const QuizMain = () => {
 		setPosition(position)
 
 	};
-
+	const correct = useRef()
 	const handleCreateQuiz = () => {
 		createQuiz(queArr)
 	}
@@ -31,12 +31,12 @@ const QuizMain = () => {
 			setOption2("")
 			setOption3("")
 			setOption4("")
+			correct.current.selected = true
 			setQue("")
 		}
 	}
+
 	useEffect(() => {
-
-
 		let data = {
 			que: que,
 			option1: option1,
@@ -105,23 +105,23 @@ const QuizMain = () => {
 				<p className="text-center text-lg">Correct Answer</p>
 
 				<select onChange={(e) => setCorrectAns(e.target.value)} className='outline-none focus:border-blue-700 form-label items-center w-full flex border-2 border-gray-300 p-3 rounded-lg my-2 cursor-pointer'>
-					<option selected value="" className='font-bold p-3' >--- Choose The Correct Option ---</option>
-					<option  value={queData.option1}>A. {queData.option1}</option>
-					<option  value={queData.option2}>B. {queData.option2}</option>
-					<option  value={queData.option3}>C. {queData.option3}</option>
-					<option  value={queData.option4}>D. {queData.option4}</option>
+					<option selected value="" ref={correct} className='font-bold p-3' >--- Choose The Correct Option ---</option>
+					<option value={queData.option1}>A. {queData.option1}</option>
+					<option value={queData.option2}>B. {queData.option2}</option>
+					<option value={queData.option3}>C. {queData.option3}</option>
+					<option value={queData.option4}>D. {queData.option4}</option>
 				</select>
 			</div>
 
 			<div className='w-full px-12 flex justify-between mt-6'>
-			<button className="bg-blue-500 text-white mt-2 active:bg-blue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="submit" onClick={handleAddQueClick}
-			>
-				Add Question
-			</button>
-			<button className="bg-blue-500 text-white mt-2 active:bg-blue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" onClick={handleCreateQuiz}
-			>
-				Create Quiz
-			</button>
+				<button className="bg-blue-500 text-white mt-2 active:bg-blue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="submit" onClick={handleAddQueClick}
+				>
+					Add Question
+				</button>
+				<button className="bg-blue-500 text-white mt-2 active:bg-blue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all duration-150" type="button" onClick={handleCreateQuiz}
+				>
+					Create Quiz
+				</button>
 			</div>
 
 		</form>
