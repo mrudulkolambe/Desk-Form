@@ -19,6 +19,7 @@ function App() {
           <Routes>
             <Route path="/" exact element={<Main />} />
             <Route path="/auth" exact element={<Login />} />
+            <Route path="/create/:classID" exact element={<Create />} />
             <Route path="/create" exact element={<Create />} />
             <Route path="/view" exact element={<View />} />
             <Route path="/quiz/:quizID" exact element={<Quiz />} />

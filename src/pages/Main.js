@@ -22,7 +22,7 @@ export const Main = () => {
       <h1 className="text-2xl font-bold mt-3 text-center">Your Quizes</h1>
       <hr className="w-11/12 m-auto my-3" />
       <div className="px-5 py-3 flex flex-wrap">
-       { quiz.length !== 0 && quiz.map((ques) => {
+       { quiz.map((ques) => {
          return <QuizBox key={ques.id} que={ques}/>
        })}
       </div>

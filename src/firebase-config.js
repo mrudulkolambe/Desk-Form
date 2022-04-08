@@ -3,12 +3,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore"
 
 const firebaseConfig = {
-	apiKey: "AIzaSyCTOx45uOvOgGRal3PPHaHR91mqtfuduCM",
-	authDomain: "quiz-app-4940e.firebaseapp.com",
-	projectId: "quiz-app-4940e",
-	storageBucket: "quiz-app-4940e.appspot.com",
-	messagingSenderId: "752585888235",
-	appId: "1:752585888235:web:04d580ab691654f39f49ae"
+	apiKey: "AIzaSyB7oU2Dv9nk9hqZC8r4lk3I9kBDNwVNcGo",
+	authDomain: "class-suit-d5fc1.firebaseapp.com",
+	projectId: "class-suit-d5fc1",
+	storageBucket: "class-suit-d5fc1.appspot.com",
+	messagingSenderId: "9795694558",
+	appId: "1:9795694558:web:2f065cd0ebd7bcdb5af74f"
   };
 
 // Initialize Firebase

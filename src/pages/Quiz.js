@@ -7,6 +7,7 @@ import QuizQue from "../components/QuizQue";
 import { useUserQuiz } from "../context/QuizQueDataContext";
 import QuizResponses from "../components/QuizResponses";
 import ScoreQuestion from "../components/ScoreQuestion";
+import Alert from "../components/Alert";
 
 const Quiz = () => {
   const navigate = useNavigate()
@@ -19,6 +20,8 @@ const Quiz = () => {
   const { getCurrentDate } = useUserQuiz();
   const [tab, setTab] = useState("QUIZ");
   const [flag, setFlag] = useState(false);
+  const [alert, setAlert] = useState(false);
+  const [message, setMessage] = useState(false);
   const [checked, setChecked] = useState(true);
   const [showResponse, setShowResponse] = useState(false);
   const dummy = {
@@ -106,6 +109,16 @@ const Quiz = () => {
       description: currentQuiz.description,
       questions: currentQuiz.Questions
     });
+    call_alert("Your Reponses Has Been Submitted!")
+  };
+
+  const call_alert = (content) => {
+    setAlert(true);
+    setMessage(content);
+    const timeout = setTimeout(() => {
+      setAlert(false);
+      clearTimeout(timeout);
+    }, 10);
   };
 
   useEffect(() => {
@@ -128,6 +141,7 @@ const Quiz = () => {
     }
     setQuestions(data);
   }, [currentQuiz]);
+
   useEffect(() => {
     const responses = data.response
     if (!data) {
@@ -147,13 +161,22 @@ const Quiz = () => {
 
   const handleUpdateChanges = async () => {
     const docRef = doc(db, "QUIZ", `${quizID}`);
-
+    const docRef2 = doc(db, "classes", `${currentQuiz && currentQuiz.classID}`, "work", `${currentQuiz && currentQuiz.workID}`);
+console.log(showResponse)
     await updateDoc(docRef, {
       title: title,
       description: description,
       acceptingResponses: checked,
       showResponse: showResponse
-    });
+    }).then(async () => {
+      await updateDoc(docRef2, {
+        title: title,
+        description: description,
+      })
+      .then(() => {
+        call_alert("Changes Saved")
+      })
+    })
 
   }
 
@@ -169,6 +192,11 @@ const Quiz = () => {
 
   return (
     <>
+      <Alert
+        message={message}
+        flag={alert}
+        messageSetter={setMessage}
+      />
       <form className="flex mt-6 m-auto flex-col justify-start h-3/4 px-3 md:px-12">
         <div className="flex flex-col justify-center ">
           <div className="relative mb-3">
@@ -265,23 +293,23 @@ const Quiz = () => {
                   >
                     Submit Form
                   </button>
-                  <div
-                    className={
-                      currentQuiz && !currentQuiz.acceptingResponses ? "" : "hidden"
-                    }
-                  >
-                    <h1 className="text-lg font-bold">
-                      This Quiz Is No longer accepting responses
-                    </h1>
-                  </div>
                 </div>
+              </div>
+              <div
+                className={
+                  currentQuiz && !currentQuiz.acceptingResponses ? "" : "hidden"
+                }
+              >
+                <h1 className="text-lg font-bold">
+                  This Quiz Is No longer accepting Responses
+                </h1>
               </div>
               <div className={!flag ? "hidden" : ""}>
                 <h1 className="text-lg font-bold text-center my-3">
-                  <hr className={ currentQuiz.creator === btoa(user.uid) ? "hidden" : "my-3"}/>
+                  <hr className={currentQuiz.creator === btoa(user.uid) ? "hidden" : "my-3"} />
                   {"Your Response Has Been Recorded!"}
                 </h1>
-                <div className={showResponse || currentQuiz.creator === btoa(user.uid)? "" : "hidden"}>
+                <div className={showResponse || currentQuiz.creator === btoa(user.uid) ? "" : "hidden"}>
 
                   <h3 className="text-xl font-semibold text-gray-600 flex flex-wrap justify-around items-center my-4">
                     <p>Score: {score}/{data && data.response.length}</p>
@@ -345,6 +373,26 @@ const Quiz = () => {
                   value={description}
                   onChange={(e) => {
                     setDescription(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="relative px-6 flex-auto my-1">
+                <label
+                  htmlFor="QuizDesc"
+                  className="block text-base font-semibold text-gray-700 mb-2"
+                >
+                  Desk Form Link :
+                </label>
+                <input
+                  id="Desk Form Link"
+                  className="rounded-md w-full cursor-pointer"
+                  placeholder="Quiz Description"
+                  autoComplete="off"
+                  value={`${window.origin}/quiz/${quizID}`}
+                  readOnly
+                  onClick={(e) => {
+                    navigator.clipboard.writeText(e.target.value);
+                    call_alert("Desk Form Link Copied To Clipboard!")
                   }}
                 />
               </div>

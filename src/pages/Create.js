@@ -3,10 +3,20 @@ import Preview from "../components/Preview";
 import QuizMain from "../components/QuizMain";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { useUserQuiz } from "../context/QuizQueDataContext";
+import { useParams } from "react-router-dom";
+import { useUserAuth } from "../context/UserAuthContext";
 
 const Create = () => {
   const [flag, setFlag] = useState(false)
-  const { description, setDescription, title, setTitle, } = useUserQuiz()
+  const { classID } = useParams()
+  const { description, setDescription, title, setTitle, integrate, setClassID} = useUserQuiz()
+  const { user } = useUserAuth()
+  useEffect(() => {
+    if(user){
+      setClassID(classID)
+    }
+  }, [user]);
+
   const handlePreview = () => {
     if (flag) {
       setFlag(false)
@@ -15,9 +25,11 @@ const Create = () => {
       setFlag(true)
     }
   }
+  
+  
   return (
     <>
-      <div className="w-screen">
+      <div className={integrate ? "w-screen": "hidden"}>
 
         <div className="flex justify-center items-center mt-3">
           <h1 className="font-bold text-3xl text-center mx-3">Create Quiz</h1>
@@ -76,6 +88,7 @@ const Create = () => {
           <Preview title={title} desc={description} flag={flag} />
         </div>
       </div>
+      <div className={!integrate ? "font-bold text-center text-3xl mt-5": "hidden"}>You Don't Have Access</div>
 
     </>
   );
