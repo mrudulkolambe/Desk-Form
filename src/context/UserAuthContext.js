@@ -12,8 +12,22 @@ const userAuthContext = createContext();
 
 export function UserAuthContextProvider({ children }) {
   const navigate = useNavigate();
-
+  const [authURL, setAuthURL] = useState("")
   const [user, setUser] = useState({});
+  const url_string = window.location
+  useEffect(() => {
+    if (user) {
+      var url = new URL(url_string);
+      const params = url.searchParams.get("redirect");
+      setAuthURL(params)
+      if (authURL) {
+        navigate(`/${authURL}`)
+      }
+      else if (!url_string.href.includes("quiz")) {
+        navigate("/")
+      }
+    }
+  }, [user]);
 
   function logOut() {
     return signOut(auth);
@@ -26,10 +40,10 @@ export function UserAuthContextProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
       setUser(currentuser);
-      if (!currentuser) {
-        navigate("/auth");
-      }
       console.log(user)
+      if (!currentuser) {
+        navigate(`/auth/?redirect=${authURL}`);
+      }
     });
 
     return () => {
@@ -38,7 +52,7 @@ export function UserAuthContextProvider({ children }) {
   }, []);
 
   return (
-    <userAuthContext.Provider value={{ user, logOut, googleSignIn }}>
+    <userAuthContext.Provider value={{ user, logOut, googleSignIn, setAuthURL }}>
       {children}
     </userAuthContext.Provider>
   );

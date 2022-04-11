@@ -57,6 +57,7 @@ const Quiz = () => {
       const unsub = onSnapshot(doc(db, "QUIZ", `${quizID}`), (doc) => {
         setChecked(doc.data().acceptingResponses)
         setShowResponse(doc.data().showResponse)
+        console.log(doc.data())
         setCurrentQuiz(doc.data());
       });
       return () => {
@@ -211,7 +212,7 @@ console.log(showResponse)
           </div>
           <div
             className={
-              currentQuiz.creator === btoa(user.uid)
+             user && currentQuiz.creator === btoa(user.uid)
                 ? "text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700"
                 : "hidden"
             }
@@ -388,7 +389,7 @@ console.log(showResponse)
                   className="rounded-md w-full cursor-pointer"
                   placeholder="Quiz Description"
                   autoComplete="off"
-                  value={`${window.origin}/quiz/${quizID}`}
+                  value={`${window.origin}/auth/?redirect=quiz/${quizID}`}
                   readOnly
                   onClick={(e) => {
                     navigator.clipboard.writeText(e.target.value);

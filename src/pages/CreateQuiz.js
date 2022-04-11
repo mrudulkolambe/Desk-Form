@@ -6,7 +6,7 @@ import { useUserQuiz } from "../context/QuizQueDataContext";
 import { useParams } from "react-router-dom";
 import { useUserAuth } from "../context/UserAuthContext";
 
-const Create = () => {
+const CreateQuiz = () => {
   const [flag, setFlag] = useState(false)
   const { classID } = useParams()
   const { description, setDescription, title, setTitle, integrate, setClassID} = useUserQuiz()
@@ -88,10 +88,10 @@ const Create = () => {
           <Preview title={title} desc={description} flag={flag} />
         </div>
       </div>
-      <div className={!integrate ? "font-bold text-center text-3xl mt-5": "hidden"}>You Don't Have Access</div>
+      {/* <div className={!integrate ? "font-bold text-center text-3xl mt-5": "hidden"}>You Don't Have Access</div> */}
 
     </>
   );
 };
 
-export default Create;
+export default CreateQuiz;

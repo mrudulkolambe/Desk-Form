@@ -5,10 +5,11 @@ import { UserAuthContextProvider } from "./context/UserAuthContext";
 import { UserQuizContextProvider } from "./context/QuizQueDataContext";
 import Login from "./pages/Login";
 import { Main } from "./pages/Main";
-import Create from "./pages/Create";
 import View from "./pages/View";
+import CreateQuiz from "./pages/CreateQuiz"
 import Quiz from "./pages/Quiz";
 import ViewScore from "./pages/ViewScore";
+import CreateForm from "./pages/CreateForm";
 
 function App() {
   return (
@@ -19,8 +20,9 @@ function App() {
           <Routes>
             <Route path="/" exact element={<Main />} />
             <Route path="/auth" exact element={<Login />} />
-            <Route path="/create/:classID" exact element={<Create />} />
-            <Route path="/create" exact element={<Create />} />
+            <Route path="/createquiz/:classID" exact element={<CreateQuiz />} />
+            <Route path="/createquiz" exact element={<CreateQuiz />} />
+            <Route path="/form/create" exact element={<CreateForm />} />
             <Route path="/view" exact element={<View />} />
             <Route path="/quiz/:quizID" exact element={<Quiz />} />
             <Route path="/score/:quizID" exact element={<ViewScore />} />

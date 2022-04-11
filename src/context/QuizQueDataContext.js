@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { addDoc, collection, query, onSnapshot, where, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { addDoc, collection, query, onSnapshot, where, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config"
 import { useUserAuth } from "./UserAuthContext";
 
@@ -31,12 +31,17 @@ export function UserQuizContextProvider({ children }) {
 	}
 	const addDataToClass = async (workID, Questions) => {
 		let date = getCurrentDate();
-		const docRef = await addDoc(collection(db, "QUIZ"), { Questions, title, description, creator: btoa(user.uid), date, acceptingResponses: true, isCreatedFromClass, classID, workID })
-		.then((doc) => {
-			const docref = doc(db, "classes", `${classID}`, "work", `${workID}`);
-			setDoc(docref, { quizID: doc.id }, { merge: true });	
-		})
-		console.log("Document written with ID: ", docRef.id);
+		let classid = ""
+		if (!classID) {
+			classid = null
+		}
+		const docRef = await addDoc(collection(db, "QUIZ"), { Questions, title, description, creator: btoa(user.uid), date, acceptingResponses: true, isCreatedFromClass, classID: classid, workID })
+		const docRefID = docRef.id
+		if (classID) {
+			const docref2 = doc(db, "classes", `${classID}`, "work", `${workID}`);
+			await updateDoc(docref2, { quizID: docRefID });
+		}
+
 		setTitle("")
 		setQueData({})
 		setQueArr([])
@@ -44,20 +49,26 @@ export function UserQuizContextProvider({ children }) {
 	}
 
 	const createQuiz = async (Questions) => {
-		await addDoc(collection(db, "classes", `${classID}`, "work"), {
-			title: title,
-			description: description,
-			date: getCurrentDate(),
-			email: user.email,
-			timestamp: serverTimestamp(),
-			type: "assignment",
-			user: user.displayName,
-			due: null,
-			quiz: true
-		}).then((doc)=> {
-			addDataToClass(doc.id, Questions)
-		})
-		
+		if (classID) {
+			await addDoc(collection(db, "classes", `${classID}`, "work"), {
+				title: title,
+				description: description,
+				date: getCurrentDate(),
+				email: user.email,
+				timestamp: serverTimestamp(),
+				type: "assignment",
+				user: user.displayName,
+				due: null,
+				quiz: true,
+				quizID: ""
+			}).then((doc) => {
+				addDataToClass(doc.id, Questions)
+			})
+		}
+		else{
+			addDataToClass(null, Questions)
+		}
+
 	}
 
 	const getCurrentDate = () => {
@@ -81,37 +92,38 @@ export function UserQuizContextProvider({ children }) {
 		if (user) {
 			let arr = []
 			const q = query(collection(db, "QUIZ"), where("creator", "==", `${btoa(user.uid)}`));
-			const unsubscribe = onSnapshot(q, (querySnapshot) => {
-				querySnapshot.forEach((doc) => {
-					let doc_data = {
-						id: doc.id,
-						data: doc.data()
-					}
-					arr.push(doc_data)
-				});
-				setQuiz(arr)
-				if (classID) {
-					console.log("class: " + classID)
-					const unsub = onSnapshot(doc(db, "classes", `${classID}`), (doc) => {
-						console.log(doc.data())
-						setClassData(doc.data())
+			// const unsubscribe = onSnapshot(q, (querySnapshot) => {
+			// 	querySnapshot.forEach((doc) => {
+			// 		let doc_data = {
+			// 			id: doc.id,
+			// 			data: doc.data()
+			// 		}
+			// 		arr.push(doc_data)
+			// 	});
+			// 	setQuiz(arr)
+				// if (classID) {
+				// 	const unsub = onSnapshot(doc(db, "classes", `${classID}`), (doc) => {
+				// 		console.log(doc.data())
+				// 		setClassData(doc.data())
 
-					});
-					return () => {
-						unsub()
-					};
-				}
-			});
-			return () => {
-				unsubscribe()
-			};
+				// 	});
+				// 	return () => {
+				// 		unsub()
+				// 	};
+				// }
+			// });
+			// return () => {
+				// unsubscribe()
+			// };
 		}
 	}, [user]);
 
 
 	useEffect(() => {
 		setIntegrate(classData.creatorEmail === user.email)
-		setIsCreatedFromClass(true)
+		if (classData !== undefined && classData !== null && classID) {
+			setIsCreatedFromClass(true)
+		}
 	}, [classData]);
 
 
