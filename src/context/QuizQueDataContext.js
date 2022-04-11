@@ -92,29 +92,29 @@ export function UserQuizContextProvider({ children }) {
 		if (user) {
 			let arr = []
 			const q = query(collection(db, "QUIZ"), where("creator", "==", `${btoa(user.uid)}`));
-			// const unsubscribe = onSnapshot(q, (querySnapshot) => {
-			// 	querySnapshot.forEach((doc) => {
-			// 		let doc_data = {
-			// 			id: doc.id,
-			// 			data: doc.data()
-			// 		}
-			// 		arr.push(doc_data)
-			// 	});
-			// 	setQuiz(arr)
-				// if (classID) {
-				// 	const unsub = onSnapshot(doc(db, "classes", `${classID}`), (doc) => {
-				// 		console.log(doc.data())
-				// 		setClassData(doc.data())
+			const unsubscribe = onSnapshot(q, (querySnapshot) => {
+				querySnapshot.forEach((doc) => {
+					let doc_data = {
+						id: doc.id,
+						data: doc.data()
+					}
+					arr.push(doc_data)
+				});
+				setQuiz(arr)
+				if (classID) {
+					const unsub = onSnapshot(doc(db, "classes", `${classID}`), (doc) => {
+						console.log(doc.data())
+						setClassData(doc.data())
 
-				// 	});
-				// 	return () => {
-				// 		unsub()
-				// 	};
-				// }
-			// });
-			// return () => {
-				// unsubscribe()
-			// };
+					});
+					return () => {
+						unsub()
+					};
+				}
+			});
+			return () => {
+				unsubscribe()
+			};
 		}
 	}, [user]);
 
